@@ -1,0 +1,21 @@
+This project contains some useful library functions for VHDL.
+
+It is licensed under the Creative Common Zero license - no rights
+reserved:
+
+"To the extent possible under law, Martin Thompson has waived all
+copyright and related or neighboring rights to libv. This work is
+published from: United Kingdom."
+
+This means:
+
+* You can use it for any purpose.  
+* No warranty of any kind is given or implied.
+
+It would be appreciated if you contributed any improvements you make
+back to the project (assuming you own the code and can contribute it
+under the same "license")
+
+The central place to get this library of code from is here:
+
+https://github.com/martinjthompson/libv
