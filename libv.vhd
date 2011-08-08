@@ -3,6 +3,9 @@
 -- This work is published from: United Kingdom.
 
 package libv is
+	type integer_vector is array(natural range <>) of integer;
+
+
     function max (a, b : integer) return integer;
     -- Function: number of bits
     -- returns number of bits required to represent 'value'
