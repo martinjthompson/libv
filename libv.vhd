@@ -3,15 +3,20 @@
 -- This work is published from: United Kingdom.
 
 package libv is
+	type integer_vector is array(natural range <>) of integer;
+
+
     function max (a, b : integer) return integer;
+    
     -- Function: number of bits
     -- returns number of bits required to represent 'value'
     function number_of_bits (value : positive) return positive;
 
-    function num_chars (val : integer) return integer;
+    function number_of_chars (val : integer) return integer;
     
     procedure assert_equal (prefix : string; got, expected : integer; level: severity_level := error);
-    procedure assert_equal (prefix        : string; got, expected : integer_vector; level : severity_level := error);
+    procedure assert_equal (prefix : string; got, expected : string; level: severity_level := error);
+    procedure assert_equal (prefix : string; got, expected : integer_vector; level : severity_level := error);
 
     function str (val : integer; length : natural := 0) return string;
     function str (val : boolean; length : natural range 0 to 1 := 0) return string;
@@ -27,10 +32,11 @@ package body libv is
             return b;
         end if;
     end function max;
-    function num_chars (val : integer) return integer is
+    
+    function number_of_chars (val : integer) return integer is
         variable temp : integer;
         variable chars_needed : natural := 0;
-    begin  -- function num_chars
+    begin  -- function number_of_chars
         if val <= 0 then
              chars_needed := 1;  -- start needing one char for potential '-' sign or for the zero itself
         end if;
@@ -40,14 +46,14 @@ package body libv is
             chars_needed := chars_needed + 1;
         end loop;
         return chars_needed;
-    end function num_chars;
+    end function number_of_chars;
 
     -- Function: str(integer)
     -- Takes an integer and optional length.  If length is zero, simply returns a string representing the integer
     -- If length is too short to hold the string, then the whole string is also returned
     -- If length is longer than the integer, the string representation will be right-aligned within a string 1 to length 
     function str (val : integer; length : natural := 0) return string is
-        constant chars_needed : natural := num_chars(val);
+        constant chars_needed : natural := number_of_chars(val);
         variable s : string(1 to max(length, chars_needed)) := (others => ' ');
     begin  -- function str
         if length = 0 then
@@ -101,6 +107,16 @@ package body libv is
             report prefix & " wrong.  Got " & str(got) & " expected " & str(expected) & "(difference=" & str(got-expected) &")"
             severity level;
     end procedure assert_equal;
+    
+    procedure assert_equal (
+        prefix        : string;
+        got, expected : string;
+        level : severity_level := error) is
+    begin  -- procedure assert_equal
+        assert got = expected
+            report prefix & " wrong.  Got " & got & " expected " & expected &")"
+            severity level;
+    end procedure assert_equal;
 
     procedure assert_equal (
         prefix        : string;
@@ -134,39 +150,44 @@ architecture test of tb_libv is
 
 begin  -- architecture test
 
-    process is
+    test: process is
     begin
-        assert num_chars(1) = 1 report "Num chars wrong" severity error;
-        assert num_chars(-1) = 2 report "Num chars wrong" severity error;
-        assert num_chars(9) = 1 report "Num chars wrong" severity error;
-        assert num_chars(-9) = 2 report "Num chars wrong" severity error;
-        assert num_chars(19) = 2 report "Num chars wrong" severity error;
-        assert num_chars(-99) = 3 report "Num chars wrong" severity error;
-        assert num_chars(1999) = 4 report "Num chars wrong" severity error;
-        assert num_chars(-9999) = 5 report "Num chars wrong" severity error;
+        assert_equal("max", max(1,4), 4, error);
+        assert_equal("max", max(1,1), 1, error);
+        assert_equal("max", max(-1,1), 1, error);
+        assert_equal("max", max(-1,-5), -1, error);
+    
+        assert_equal("number_of_chars", number_of_chars(1), 1, error);
+        assert_equal("number_of_chars", number_of_chars(-1), 2, error);
+        assert_equal("number_of_chars", number_of_chars(9), 1, error);
+        assert_equal("number_of_chars", number_of_chars(-9), 2, error);
+        assert_equal("number_of_chars", number_of_chars(19), 2, error);
+        assert_equal("number_of_chars", number_of_chars(1999), 4, error);
+        assert_equal("number_of_chars", number_of_chars(-9999), 5, error);
 
-        assert number_of_bits(1) = 1 report "num bits wrong" severity error;
-        assert number_of_bits(2) = 2 report "num bits wrong" severity error;
-        assert number_of_bits(3) = 2 report "num bits wrong" severity error;
-        assert number_of_bits(7) = 3 report "num bits wrong" severity error;
-        assert number_of_bits(8) = 4 report "num bits wrong" severity error;
-        assert number_of_bits(200) = 8 report "num bits wrong" severity error;
-        assert number_of_bits(1200) = 11 report "num bits wrong" severity error;
+        assert_equal("number_of_bits", number_of_bits(1), 1, error);
+        assert_equal("number_of_bits", number_of_bits(2), 2, error);
+        assert_equal("number_of_bits", number_of_bits(3), 2, error);
+        assert_equal("number_of_bits", number_of_bits(7), 3, error);
+        assert_equal("number_of_bits", number_of_bits(8), 4, error);
+        assert_equal("number_of_bits", number_of_bits(200), 8, error);
+        assert_equal("number_of_bits", number_of_bits(1200), 11, error);
 
-        assert str(  0) = "0" report "str(int) wrong" severity error;
-        assert str( 10) = "10" report "str(int) wrong" severity error;
-        assert str(-10) = "-10" report "str(int) wrong" severity error;
-        assert str(  0,1) = "0" report "str(int) wrong" severity error;
-        assert str(  0,2) = " 0" report "str(int) wrong" severity error;
-        assert str( 10,1) = "10" report "str(int) wrong" severity error;
-        assert str(-10,1) = "-10" report "str(int) wrong" severity error;
-        assert str( 10,4) = "  10" report "str(int) wrong" severity error;
-        assert str(-10,4) = " -10" report "str(int) wrong" severity error;
+        assert_equal("str(int)", str(0), "0", error);
+        assert_equal("str(int)", str(10), "10", error);
+        assert_equal("str(int)", str(-10), "-10", error);
+        assert_equal("str(int)", str(0,1), "0", error);
+        assert_equal("str(int)", str(0,2), " 0", error);
+        assert_equal("str(int)", str(10,1), "10", error);
+        assert_equal("str(int)", str(-10,1), "-10", error);
+        assert_equal("str(int)", str(10,4), "  10", error);
+        assert_equal("str(int)", str(-10,4), " -10", error);
+        
+        assert_equal("str(boolean)", str(false), "false", error);
+        assert_equal("str(boolean)", str(true), "true", error);
+        assert_equal("str(boolean)", str(false,1), "F", error);
+        assert_equal("str(boolean)", str(true,1), "T", error);
 
-        assert str(false) = "false" report "str(boolean) wrong" severity error;
-        assert str(true)  = "true" report "str(boolean) wrong" severity error;
-        assert str(false, 1) = "F" report "str(boolean) wrong" severity error;
-        assert str(true, 1)  = "T" report "str(boolean) wrong" severity error;
         report test'path_name & "Tests complete" severity note;
         wait;
     end process;
