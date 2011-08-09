@@ -1,6 +1,6 @@
 -- To the extent possible under law,
 -- Martin Thompson and Hendrick Eeckhaut
--- have waived all copyright and related or neighboring
+-- have waived all copyright and related or neighbouring
 -- rights to the libv project.
 -- This work is published from: United Kingdom.
 
