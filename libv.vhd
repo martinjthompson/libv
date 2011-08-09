@@ -3,8 +3,9 @@
 -- This work is published from: United Kingdom.
 
 package libv is
-	type integer_vector is array(natural range <>) of integer;
-
+    -- VHDL-2008 users will have to comment this line out as it's
+    -- a default part of that standard
+    type integer_vector is array(natural range <>) of integer;
 
     function max (a, b : integer) return integer;
     
