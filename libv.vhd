@@ -1,3 +1,79 @@
+entity tb_libv is
+    
+end entity tb_libv;
+use work.libv.all;
+architecture test of tb_libv is
+begin  -- architecture test
+
+    test: process is
+    begin
+        echo ( "______________________ Testing procedure tb_libv" & LF&LF);     
+        assert_equal("max", max(1,4), 4);
+        assert_equal("max", max(1,1), 1);
+        assert_equal("max", max(-1,1), 1);
+        assert_equal("max", max(-1,-5), -1);
+    
+        assert_equal("number_of_chars", number_of_chars(1), 1);
+        assert_equal("number_of_chars", number_of_chars(-1), 2);
+        assert_equal("number_of_chars", number_of_chars(9), 1);
+        assert_equal("number_of_chars", number_of_chars(-9), 2);
+        assert_equal("number_of_chars", number_of_chars(19), 2);
+        assert_equal("number_of_chars", number_of_chars(1999), 4);
+        assert_equal("number_of_chars", number_of_chars(-9999), 5);
+
+        assert_equal("number_of_bits", number_of_bits(1), 1);
+        assert_equal("number_of_bits", number_of_bits(2), 2);
+        assert_equal("number_of_bits", number_of_bits(3), 2);
+        assert_equal("number_of_bits", number_of_bits(7), 3);
+        assert_equal("number_of_bits", number_of_bits(8), 4);
+        assert_equal("number_of_bits", number_of_bits(200), 8);
+        assert_equal("number_of_bits", number_of_bits(1200), 11);
+
+        assert_equal("str(int)", str(0), "0");
+        assert_equal("str(int)", str(10), "10");
+        assert_equal("str(int)", str(-10), "-10");
+        assert_equal("str(int)", str(0,1), "0");
+        assert_equal("str(int)", str(0,2), " 0");
+        
+        assert_equal("str(int)", str(10,4), "  10");
+        assert_equal("str(int)", str(-10,4), " -10");
+        
+        assert_equal("str(boolean)", str(false), "false");
+        assert_equal("str(boolean)", str(true), "true");
+        assert_equal("str(boolean)", str(false,1), "F");
+        assert_equal("str(boolean)", str(true,1), "T");
+        echo ("No assertions expected above here __^" & LF&LF);     
+        
+        assert_equal("str(int)", str(10,1), "10");   
+        echo("______________________fit warning expected above ^" & LF&LF);
+        
+        assert_equal("str(int)", str(-10,1), "-10"); 
+        echo("______________________fit warning expected above ^" & LF&LF);
+
+        report test'path_name & "Tests complete" severity note;
+        wait;
+    end process;
+
+end architecture test;
+
+-- Expected output:
+--
+--# ______________________ Testing procedure tb_libv
+--# 
+--# No assertions expected above here __^
+--# 
+--# ** Warning: Can't fit 10 into 1 character(s) - returning full width
+--#    Time: 0 ps  Iteration: 0  Instance: /tb_libv
+--# ______________________fit warning expected above ^
+--# 
+--# ** Warning: Can't fit -10 into 1 character(s) - returning full width
+--#    Time: 0 ps  Iteration: 0  Instance: /tb_libv
+--# ______________________fit warning expected above ^
+--# 
+--# ** Note: :tb_libv:test:Tests complete
+--#    Time: 0 ps  Iteration: 0  Instance: /tb_libv
+
+
 -- To the extent possible under law,
 -- Martin Thompson and Hendrick Eeckhaut
 -- have waived all copyright and related or neighbouring
