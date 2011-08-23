@@ -17,6 +17,9 @@ package libv is
 
     function number_of_chars (val : integer) return integer;
     
+    -- Function: echo
+    -- writes one string to "STD_OUTPUT" without a line feed
+    procedure echo ( val : string := "");        
     procedure assert_equal (prefix : string; got, expected : integer; level: severity_level := error);
     procedure assert_equal (prefix : string; got, expected : string; level: severity_level := error);
     procedure assert_equal (prefix : string; got, expected : integer_vector; level : severity_level := error);
@@ -27,6 +30,7 @@ package libv is
 end package libv;
 
 package body libv is
+  
     function max (a,b : integer) return integer is
     begin  -- function max
         if a > b then
@@ -101,6 +105,12 @@ package body libv is
         return bits;
     end function number_of_bits;
 
+    procedure echo ( -- write one string to "STD_OUTPUT" without a line feed
+        val : in string := "") is
+    begin
+      std.textio.write(std.textio.output, val);
+    end procedure echo;
+
     procedure assert_equal (
         prefix        : string;
         got, expected : integer;
@@ -115,7 +125,7 @@ package body libv is
         prefix        : string;
         got, expected : string;
         level : severity_level := error) is
-    begin  -- procedure assert_equal
+    begin  -- procedure assert_equal        
         assert got = expected
             report prefix & " wrong.  Got " & got & " expected " & expected &")"
             severity level;
@@ -154,6 +164,7 @@ begin  -- architecture test
 
     test: process is
     begin
+        echo ( "______________________ Testing procedure tb_libv" & LF&LF);     
         assert_equal("max", max(1,4), 4);
         assert_equal("max", max(1,1), 1);
         assert_equal("max", max(-1,1), 1);
@@ -180,8 +191,7 @@ begin  -- architecture test
         assert_equal("str(int)", str(-10), "-10");
         assert_equal("str(int)", str(0,1), "0");
         assert_equal("str(int)", str(0,2), " 0");
-        assert_equal("str(int)", str(10,1), "10");
-        assert_equal("str(int)", str(-10,1), "-10");
+        
         assert_equal("str(int)", str(10,4), "  10");
         assert_equal("str(int)", str(-10,4), " -10");
         
@@ -189,9 +199,33 @@ begin  -- architecture test
         assert_equal("str(boolean)", str(true), "true");
         assert_equal("str(boolean)", str(false,1), "F");
         assert_equal("str(boolean)", str(true,1), "T");
+        echo ("No assertions expected above here __^" & LF&LF);     
+        
+        assert_equal("str(int)", str(10,1), "10");   
+        echo("______________________fit warning expected above ^" & LF&LF);
+        
+        assert_equal("str(int)", str(-10,1), "-10"); 
+        echo("______________________fit warning expected above ^" & LF&LF);
 
         report test'path_name & "Tests complete" severity note;
         wait;
     end process;
 
 end architecture test;
+
+-- Expected output:
+--
+--# ______________________ Testing procedure tb_libv
+--# 
+--# No assertions expected above here __^
+--# 
+--# ** Warning: Can't fit 10 into 1 character(s) - returning full width
+--#    Time: 0 ps  Iteration: 0  Instance: /tb_libv
+--# ______________________fit warning expected above ^
+--# 
+--# ** Warning: Can't fit -10 into 1 character(s) - returning full width
+--#    Time: 0 ps  Iteration: 0  Instance: /tb_libv
+--# ______________________fit warning expected above ^
+--# 
+--# ** Note: :tb_libv:test:Tests complete
+--#    Time: 0 ps  Iteration: 0  Instance: /tb_libv
