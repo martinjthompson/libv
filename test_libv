@@ -1,0 +1,6 @@
+#!/bin/sh
+ghdl -a libv.vhd && \
+ghdl -e tb_libv && \
+ghdl -r tb_libv  --assert-level=error  && \
+echo ----------------------------------------
+echo If you see can read this, things worked OK!

@@ -1,5 +1,5 @@
 -- To the extent possible under law,
--- Martin Thompson and Hendrick Eeckhaut
+-- Martin Thompson, Mike Tresler and Hendrick Eeckhaut
 -- have waived all copyright and related or neighbouring
 -- rights to the libv project.
 -- This work is published from: United Kingdom.
@@ -17,12 +17,13 @@ package libv is
 
     function number_of_chars (val : integer) return integer;
     
-    -- Function: echo
-    -- writes one string to "STD_OUTPUT" without a line feed
-    procedure echo ( val : string := "");        
     procedure assert_equal (prefix : string; got, expected : integer; level: severity_level := error);
     procedure assert_equal (prefix : string; got, expected : string; level: severity_level := error);
     procedure assert_equal (prefix : string; got, expected : integer_vector; level : severity_level := error);
+
+    -- Function: echo
+    -- writes one string to "STD_OUTPUT" without a line feed
+    procedure echo ( val : in string := "");        
 
     function str (val : integer; length : natural := 0) return string;
     function str (val : boolean; length : natural range 0 to 1 := 0) return string;
@@ -105,8 +106,7 @@ package body libv is
         return bits;
     end function number_of_bits;
 
-    procedure echo ( -- write one string to "STD_OUTPUT" without a line feed
-        val : in string := "") is
+    procedure echo (val : in string := "") is
     begin
       std.textio.write(std.textio.output, val);
     end procedure echo;
