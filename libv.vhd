@@ -1,8 +1,14 @@
 -- To the extent possible under law,
--- Martin Thompson, Mike Tresler and Hendrick Eeckhaut
+--   Martin Thompson, 
+--   Mike Tresler,
+--   Hendrick Eeckhaut,
+--   and Sigasi nv, 
 -- have waived all copyright and related or neighbouring
 -- rights to the libv project.
--- This work is published from: United Kingdom.
+-- This work is published from: 
+--   United Kingdom, 
+--   Belgium
+--   and the United States of America.
 
 package libv is
     -- VHDL-2008 users will have to comment this line out as it's
@@ -16,10 +22,26 @@ package libv is
     function number_of_bits (value : positive) return positive;
 
     function number_of_chars (val : integer) return integer;
-    
+
+    type frequency is range -2147483647 to 2147483647 units KHz;
+        MHz = 1000 KHz;
+        GHz = 1000 MHz;
+    end units;
+
+    function "/"(a : integer; b : frequency) return time;
+
+    function "/"(a : integer; b : time) return frequency;
+
+    function "*"(a : frequency; b : time) return real;
+
+    function "*"(a : time; b : frequency) return real;
+
     procedure assert_equal (prefix : string; got, expected : integer; level: severity_level := error);
     procedure assert_equal (prefix : string; got, expected : string; level: severity_level := error);
     procedure assert_equal (prefix : string; got, expected : integer_vector; level : severity_level := error);
+    procedure assert_equal (prefix : string; got, expected : time; level : severity_level := error);
+    procedure assert_equal (prefix : string; got, expected : frequency; level : severity_level := error);
+    procedure assert_equal (prefix : string; got, expected : real; level : severity_level := error);
 
     -- Function: echo
     -- writes one string to "STD_OUTPUT" without a line feed
@@ -153,6 +175,50 @@ package body libv is
                 severity level;
         end loop;  -- i
     end procedure assert_equal;
+
+    procedure assert_equal(
+        prefix        : string;
+        got, expected : time;
+        level         : severity_level := error) is
+    begin                               -- procedure assert_equal
+        assert got = expected report prefix & " wrong.  Got " & time'image(got) & " expected " & time'image(expected) & ")" severity level;
+    end procedure assert_equal;
+
+    procedure assert_equal(
+        prefix        : string;
+        got, expected : frequency;
+        level         : severity_level := error) is
+    begin                               -- procedure assert_equal
+        assert got = expected report prefix & " wrong.  Got " & frequency'image(got) & " expected " & frequency'image(expected) & ")" severity level;
+    end procedure assert_equal;
+
+    procedure assert_equal(
+        prefix        : string;
+        got, expected : real;
+        level         : severity_level := error) is
+    begin                               -- procedure assert_equal
+        assert got = expected report prefix & " wrong.  Got " & real'image(got) & " expected " & real'image(expected) & ")" severity level;
+    end procedure assert_equal;
+
+    function "/"(a : integer; b : frequency) return time is
+    begin
+        return a * 1 ms / (b / 1 KHz);
+    end function;
+
+    function "/"(a : integer; b : time) return frequency is
+    begin
+        return (a * 1 GHz) / (b / 1 ns);
+    end function;
+
+    function "*"(a : frequency; b : time) return real is
+    begin
+        return real((a / Khz) * (b / ns)) * 1.0E-6;
+    end function;
+
+    function "*"(a : time; b : frequency) return real is
+    begin
+        return b * a;
+    end function;
 end package body libv;
 
 entity tb_libv is
@@ -199,6 +265,21 @@ begin  -- architecture test
         assert_equal("str(boolean)", str(true), "true");
         assert_equal("str(boolean)", str(false,1), "F");
         assert_equal("str(boolean)", str(true,1), "T");
+        
+        assert_equal("divide frequency", 1 / 1 MHz, 1 us);
+        assert_equal("divide frequency", 1 / 2 KHz, 500 us);
+        assert_equal("divide frequency", 1 / 1 GHz, 1 ns);
+        assert_equal("divide frequency", 1 / 2 GHz, 500 ps);
+        assert_equal("divide frequency", 2 / 4 KHz, 500 us);
+
+        assert_equal("divide by time", 1 GHz, 1 / 1 ns);
+        assert_equal("divide by time", 500 KHz, 1 / 2 us);
+        assert_equal("divide by time", 500 KHz, 1 / 2 us);
+        assert_equal("divide by time", 2 KHz, 1 / 500 us);
+        assert_equal("divide by time", 2 MHz, 1 / 500 ns);
+        assert_equal("divide by time", 4 KHz, 2 / 500 us);
+        assert_equal("multiply time*freq", 1.0, 1 us * 1 MHz);
+        assert_equal("multiply time*freq", 6.0, 3 MHz * 2 us);
         echo ("No assertions expected above here __^" & LF&LF);     
         
         assert_equal("str(int)", str(10,1), "10");   
