@@ -3,10 +3,17 @@ This project contains some useful library functions for VHDL.
 It is licensed under the Creative Common Zero license - no rights
 reserved:
 
-"To the extent possible under law, Martin Thompson, Mike Treseler and
-Hendrick Eeckhaut have waived all copyright and related or
-neighbouring rights to libv. This work is published from: United
-Kingdom."
+"To the extent possible under law,
+  Martin Thompson, 
+  Mike Tresler,
+  Hendrick Eeckhaut,
+  and Sigasi nv, 
+have waived all copyright and related or neighbouring
+rights to the libv project.
+This work is published from: 
+  United Kingdom, 
+  Belgium
+  and the United States of America."
 
 This means:
 
@@ -22,7 +29,7 @@ The central place to get this library of code from is here:
 https://github.com/martinjthompson/libv
 
 Running the tests
------------------ 
+-----------------
 
 The test script is written for ghdl under Linux (a Windows
 contribution would be welcome :)
