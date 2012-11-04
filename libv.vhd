@@ -23,8 +23,8 @@ package libv is
 
     function number_of_chars (val : integer) return integer;
 
-    type frequency is range -2147483647 to 2147483647 units KHz;
-        MHz = 1000 KHz;
+    type frequency is range -2147483647 to 2147483647 units kHz;
+        MHz = 1000 kHz;
         GHz = 1000 MHz;
     end units;
 
@@ -55,7 +55,7 @@ end package libv;
 package body libv is
   
     function max (a,b : integer) return integer is
-    begin  -- function max
+    begin
         if a > b then
             return a;
         else
@@ -66,7 +66,7 @@ package body libv is
     function number_of_chars (val : integer) return integer is
         variable temp : integer;
         variable chars_needed : natural := 0;
-    begin  -- function number_of_chars
+    begin
         if val <= 0 then
              chars_needed := 1;  -- start needing one char for potential '-' sign or for the zero itself
         end if;
@@ -103,7 +103,7 @@ package body libv is
     -- If length is 0, simply returns a string "True" or "False"
     -- If length is 1, returns "T" or "F"
     function str (val : boolean; length:natural range 0 to 1 := 0) return string is
-    begin  -- function str
+    begin
         if length = 0 then
             return boolean'image(val);
         end if;
@@ -121,7 +121,7 @@ package body libv is
         value : positive)
         return positive is
         variable bits : positive := 1;
-    begin  -- function number_of_bits
+    begin
         while 2**bits <= value loop
             bits := bits + 1;
         end loop;
@@ -137,7 +137,7 @@ package body libv is
         prefix        : string;
         got, expected : integer;
         level : severity_level := error) is
-    begin  -- procedure assert_equal
+    begin
         assert got = expected
             report prefix & " wrong.  Got " & str(got) & " expected " & str(expected) & "(difference=" & str(got-expected) &")"
             severity level;
@@ -147,7 +147,7 @@ package body libv is
         prefix        : string;
         got, expected : string;
         level : severity_level := error) is
-    begin  -- procedure assert_equal        
+    begin
         assert got = expected
             report prefix & " wrong.  Got " & got & " expected " & expected &")"
             severity level;
@@ -180,7 +180,7 @@ package body libv is
         prefix        : string;
         got, expected : time;
         level         : severity_level := error) is
-    begin                               -- procedure assert_equal
+    begin
         assert got = expected report prefix & " wrong.  Got " & time'image(got) & " expected " & time'image(expected) & ")" severity level;
     end procedure assert_equal;
 
@@ -188,7 +188,7 @@ package body libv is
         prefix        : string;
         got, expected : frequency;
         level         : severity_level := error) is
-    begin                               -- procedure assert_equal
+    begin
         assert got = expected report prefix & " wrong.  Got " & frequency'image(got) & " expected " & frequency'image(expected) & ")" severity level;
     end procedure assert_equal;
 
@@ -196,13 +196,13 @@ package body libv is
         prefix        : string;
         got, expected : real;
         level         : severity_level := error) is
-    begin                               -- procedure assert_equal
+    begin
         assert got = expected report prefix & " wrong.  Got " & real'image(got) & " expected " & real'image(expected) & ")" severity level;
     end procedure assert_equal;
 
     function "/"(a : integer; b : frequency) return time is
     begin
-        return a * 1 ms / (b / 1 KHz);
+        return a * 1 ms / (b / 1 kHz);
     end function;
 
     function "/"(a : integer; b : time) return frequency is
@@ -267,17 +267,17 @@ begin  -- architecture test
         assert_equal("str(boolean)", str(true,1), "T");
         
         assert_equal("divide frequency", 1 / 1 MHz, 1 us);
-        assert_equal("divide frequency", 1 / 2 KHz, 500 us);
+        assert_equal("divide frequency", 1 / 2 kHz, 500 us);
         assert_equal("divide frequency", 1 / 1 GHz, 1 ns);
         assert_equal("divide frequency", 1 / 2 GHz, 500 ps);
-        assert_equal("divide frequency", 2 / 4 KHz, 500 us);
+        assert_equal("divide frequency", 2 / 4 kHz, 500 us);
 
         assert_equal("divide by time", 1 GHz, 1 / 1 ns);
-        assert_equal("divide by time", 500 KHz, 1 / 2 us);
-        assert_equal("divide by time", 500 KHz, 1 / 2 us);
-        assert_equal("divide by time", 2 KHz, 1 / 500 us);
+        assert_equal("divide by time", 500 kHz, 1 / 2 us);
+        assert_equal("divide by time", 500 kHz, 1 / 2 us);
+        assert_equal("divide by time", 2 kHz, 1 / 500 us);
         assert_equal("divide by time", 2 MHz, 1 / 500 ns);
-        assert_equal("divide by time", 4 KHz, 2 / 500 us);
+        assert_equal("divide by time", 4 kHz, 2 / 500 us);
         assert_equal("multiply time*freq", 1.0, 1 us * 1 MHz);
         assert_equal("multiply time*freq", 6.0, 3 MHz * 2 us);
         echo ("No assertions expected above here __^" & LF&LF);     
