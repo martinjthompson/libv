@@ -120,10 +120,12 @@ package body libv is
     function number_of_bits (
         value : positive)
         return positive is
-        variable bits : positive := 1;
+        variable bits : natural := 0;
+        variable val : natural := value;
     begin
-        while 2**bits <= value loop
+        while val > 0 loop
             bits := bits + 1;
+            val  :=  val / 2;
         end loop;
         return bits;
     end function number_of_bits;
@@ -251,6 +253,7 @@ begin  -- architecture test
         assert_equal("number_of_bits", number_of_bits(8), 4);
         assert_equal("number_of_bits", number_of_bits(200), 8);
         assert_equal("number_of_bits", number_of_bits(1200), 11);
+        assert_equal("number_of_bits", number_of_bits(integer'high), 31);
 
         assert_equal("str(int)", str(0), "0");
         assert_equal("str(int)", str(10), "10");
