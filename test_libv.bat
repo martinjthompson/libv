@@ -1,6 +1,7 @@
 @ECHO OFF
 setlocal
 
+::Check GHDL version
 set TESTEDVER=25
 for /f "tokens=2" %%g in ('ghdl -v ^| findstr /i "edition"') do (
 	set GHDLVER=%%g
@@ -12,6 +13,8 @@ for /f "delims=. tokens=1-2" %%v in ("%GHDLVER%") do (
 )
 set MAJORVER=%MAJORVER:"=%
 set MINORVER=%MINORVER:"=%
+
+::Warn the user if they are using a GHDL version beyond 0.25, check if they wish to continue
 if %MINORVER% GTR %TESTEDVER% (
 	@echo WARNING: CURRENT VERSION OF GHDL IS %MAJORVER%.%MINORVER% - test_libv.bat has only been tested using GHDL 0.25 due to known issues with simulations in later versions of GHDL for Windows
 	choice /M "Do you wish to continue" /c YN
@@ -25,6 +28,8 @@ if %MINORVER% GTR %TESTEDVER% (
 	  echo Ctrl+C pressed.
 	)
 )
+
+::Run the original test_libv script commands
 :yes
 ghdl -a libv.vhd
 ghdl -e tb_libv
