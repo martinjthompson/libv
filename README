@@ -7,12 +7,14 @@ reserved:
   Martin Thompson, 
   Mike Tresler,
   Hendrick Eeckhaut,
-  and Sigasi nv, 
+  Sigasi nv and
+  Michael Frechtling 
 have waived all copyright and related or neighbouring
 rights to the libv project.
 This work is published from: 
   United Kingdom, 
-  Belgium
+  Belgium,
+  Australia,
   and the United States of America."
 
 This means:
@@ -21,8 +23,9 @@ This means:
 * No warranty of any kind is given or implied.
 
 It would be appreciated if you contributed any improvements you make
-back to the project (assuming you own the code and can contribute it
-under the same "license")
+back to the project.  Contributions received  (for example, pull requests 
+received on Github) will be interpreted as agreeing to waive 
+copyright and related rights as described above.
 
 The central place to get this library of code from is here:
 
@@ -31,7 +34,10 @@ https://github.com/martinjthompson/libv
 Running the tests
 -----------------
 
-The test script is written for ghdl under Linux (a Windows
-contribution would be welcome :)
+The test script is written for ghdl under Linux
 
-$ ./test
+$ ./test_libv
+
+or on Windows:
+
+C:> test_libv.bat
