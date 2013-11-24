@@ -214,12 +214,12 @@ package body libv is
 
     function "*"(a : frequency; b : time) return real is
     begin
-        return real((a / Khz) * (b / ns)) * 1.0E-6;
+        return (real(a / 1 Khz) * real(b / 1 ns)) * 1.0E-6;
     end function;
 
     function "*"(a : time; b : frequency) return real is
     begin
-        return b * a;
+        return (real(b / 1 Khz) * real(a / 1 ns)) * 1.0E-6;
     end function;
 end package body libv;
 
@@ -281,15 +281,19 @@ begin  -- architecture test
         assert_equal("divide by time", 2 kHz, 1 / 500 us);
         assert_equal("divide by time", 2 MHz, 1 / 500 ns);
         assert_equal("divide by time", 4 kHz, 2 / 500 us);
-        assert_equal("multiply time*freq", 1.0, 1 us * 1 MHz);
-        assert_equal("multiply time*freq", 6.0, 3 MHz * 2 us);
+        assert_equal("multiply time*freq", 1 us * 1 MHz, 1.0);
+        assert_equal("multiply time*freq", 1 us * 2 MHz, 2.0);
+        assert_equal("multiply time*freq", 1 ms * 100_800 kHz, 100800.0);
+        assert_equal("multiply freq*time", 3 MHz * 2 us, 6.0);
+        assert_equal("multiply freq*time", 3 MHz * 100 ns, 0.3);
+        assert_equal("multiply freq*time", 100_800 kHz * 1 ms, 100800.0);
         echo ("No assertions expected above here __^" & LF&LF);     
-        
+        wait for 1 ns; -- ensure Modelsim doesn't rearrange the warning lines relative to the echos
         assert_equal("str(int)", str(10,1), "10");   
-        echo("______________________fit warning expected above ^" & LF&LF);
-        
+        echo ("______________________fit warning expected above ^" & LF&LF);
+        wait for 1 ns;
         assert_equal("str(int)", str(-10,1), "-10"); 
-        echo("______________________fit warning expected above ^" & LF&LF);
+        echo ("______________________fit warning expected above ^" & LF&LF);
 
         report test'path_name & "Tests complete" severity note;
         wait;
